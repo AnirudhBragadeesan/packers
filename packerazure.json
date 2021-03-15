@@ -1,0 +1,45 @@
+{
+  "builders": [{
+    "type": "azure-arm",
+    
+	"client_id": "bfaa1a88-3ea3-4124-aba4-ea9c0f627edf",
+    "client_secret": "LW1UzkbpC-_d-CIWAmf8M38VSDv_YbL1ez",
+    "tenant_id": "7a916015-20ae-4ad1-9170-eefd915e9272",
+    "subscription_id": "2e0403b7-fefd-4cf9-ba7c-259c353e2ff8",
+    "storage_account": "mypackergroup",
+    "resource_group_name":"testrg-packer",
+
+    "capture_container_name": "testpacker02",
+    "capture_name_prefix": "testpacker02",
+
+    "os_type": "Windows",
+    "image_publisher": "MicrosoftWindowsServer",
+    "image_offer": "WindowsServer",
+    "image_sku": "2019-Datacenter",
+
+
+   "communicator": "winrm",
+    "winrm_use_ssl": true,
+    "winrm_insecure": true,
+    "winrm_timeout": "5m",
+    "winrm_username": "packer",
+
+    "azure_tags": {
+        "dept": "Engineering",
+        "task": "Image deployment"
+    },
+
+    "build_resource_group_name": "testrg-packer",
+    "vm_size": "Standard_D2_v2"
+  }],
+  "provisioners": [{
+    "type": "powershell",
+    "inline": [
+      "Add-WindowsFeature Web-Server",
+      "while ((Get-Service RdAgent).Status -ne 'Running') { Start-Sleep -s 5 }",
+      "while ((Get-Service WindowsAzureGuestAgent).Status -ne 'Running') { Start-Sleep -s 5 }",
+      "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit",
+      "while($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
+    ]
+	  }]
+}
