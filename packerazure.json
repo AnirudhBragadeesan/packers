@@ -1,24 +1,26 @@
 {
   "builders": [{
     "type": "azure-arm",
-    
-	"client_id": "bfaa1a88-3ea3-4124-aba4-ea9c0f627edf",
-    "client_secret": "LW1UzkbpC-_d-CIWAmf8M38VSDv_YbL1ez",
-    "tenant_id": "7a916015-20ae-4ad1-9170-eefd915e9272",
-    "subscription_id": "2e0403b7-fefd-4cf9-ba7c-259c353e2ff8",
-    "storage_account": "mypackergroup",
-    "resource_group_name":"testrg-packer",
 
-    "capture_container_name": "testpacker02",
-    "capture_name_prefix": "testpacker02",
+    "client_id": "7a051f30-ba0a-4f2f-bd4c-f4b6bb409cd3",
+    "client_secret": "WE19~YFj3pN50TaZUkKv2mG.UC870-_q-u",
+    "tenant_id": "9cb037cb-dd2f-4df3-ac06-20bf27393596",
+    "subscription_id": "990d169a-6e0b-41c5-9236-ed6b0539f272",
+    "storage_account": "mytestpackergroup",
+	"resource_group_name":"myPackerGroup",
+	
+	"capture_container_name": "testpacker01",
+    "capture_name_prefix": "testpacker01",
 
     "os_type": "Windows",
     "image_publisher": "MicrosoftWindowsServer",
     "image_offer": "WindowsServer",
     "image_sku": "2019-Datacenter",
-
-
-   "communicator": "winrm",
+     
+	 
+	
+	 
+    "communicator": "winrm",
     "winrm_use_ssl": true,
     "winrm_insecure": true,
     "winrm_timeout": "5m",
@@ -29,7 +31,7 @@
         "task": "Image deployment"
     },
 
-    "build_resource_group_name": "testrg-packer",
+    "build_resource_group_name": "myPackerGroup",
     "vm_size": "Standard_D2_v2"
   }],
   "provisioners": [{
@@ -41,5 +43,5 @@
       "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit",
       "while($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
     ]
-	  }]
+  }]
 }
